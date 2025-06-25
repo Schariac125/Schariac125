@@ -1,16 +1,17 @@
-## Hi there 👋
+## ”羽ばたくよ希望乗せて“*
 
-<!--
-**Schariac125/Schariac125** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+### Schariac125,一名普普通通的小只大学生
 
-Here are some ideas to get you started:
+目前阶段这个Github账号仅仅用来存储代码与一些学习资料
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+可能在之后会参与一些小项目（真的有机会吗？）
+
+QQmail：3321095604@qq.com
+
+gmail:schariac125@gmail.com
+
+大部分平台同名，小概率可以在洛谷，leetcode等平台捕捉到我
+
+可以通过邮箱联系我（
+
+什么时候能成为大只（？）
