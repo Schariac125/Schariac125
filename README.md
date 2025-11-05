@@ -1,17 +1,18 @@
 ## ”羽ばたくよ希望乗せて“*
+
 ## ✨ Hi there, I’m **Schariac125**
 
 It’s a pleasure to meet you here — to share my code and my words.
 
 I’m a learner, moving forward step by step, carrying a quiet curiosity for **algorithms** and the **intelligence of the future**.
 
-🌱 **Currently learning:** exploring algorithms, seeking elegant solutions in the world of logic.
- 🌿 **Also trying:** stepping into the field of machine learning, hoping to walk gently through its vast landscape.
- 📝 **Writing a bit:** I keep my study notes and occasional life reflections softly placed on my blog.
- ✨ **About me:** I believe code is a poem of reason — and that warmth and understanding should live behind every line of technology.
+- 🌱 **Currently learning:** exploring algorithms, seeking elegant solutions in the world of logic.
+-  🌿 **Also trying:** stepping into the field of machine learning, hoping to walk gently through its vast landscape.
+-  📝 **Writing a bit:** I keep my study notes and occasional life reflections softly placed on my blog.
+-  ✨ **About me:** I believe code is a poem of reason — and that warmth and understanding should live behind every line of technology.
 
 I often work with:
- **Python · C++ · PyTorch · Git · Linux**
+ `**Python · C++ · PyTorch · Git · Linux**`
 
 If you also love code, algorithms, or simply wish to be friends:
  📮 Feel free to reach out: **schariac125@gmail.com**
