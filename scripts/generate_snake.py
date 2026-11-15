@@ -13,6 +13,7 @@ import os
 import random
 import urllib.error
 import urllib.request
+from datetime import date
 from pathlib import Path
 
 API_URL = "https://api.github.com/graphql"
@@ -119,7 +120,65 @@ def number(value: float) -> str:
     return text or "0"
 
 
-def build_svg(weeks: list[dict], theme: str) -> str:
+def serpentine_order(columns: int) -> list[tuple[int, int]]:
+    order: list[tuple[int, int]] = []
+    for column in range(columns):
+        rows = range(ROWS) if column % 2 == 0 else range(ROWS - 1, -1, -1)
+        for row in rows:
+            order.append((column, row))
+    return order
+
+
+def randomize_order(
+    order: list[tuple[int, int]], columns: int, seed: int
+) -> list[tuple[int, int]]:
+    """Mix a serpentine path with backbite moves while keeping it Hamiltonian."""
+    order = list(order)
+    position = {cell: index for index, cell in enumerate(order)}
+    neighbors: dict[tuple[int, int], list[tuple[int, int]]] = {}
+    for column in range(columns):
+        for row in range(ROWS):
+            neighbors[(column, row)] = [
+                (column + dc, row + dr)
+                for dc, dr in ((1, 0), (-1, 0), (0, 1), (0, -1))
+                if 0 <= column + dc < columns and 0 <= row + dr < ROWS
+            ]
+
+    rng = random.Random(seed)
+    count = len(order)
+    for _ in range(max(8000, count * 100)):
+        if rng.random() < 0.5:
+            endpoint = order[0]
+            choices = [cell for cell in neighbors[endpoint] if cell != order[1]]
+            if not choices:
+                continue
+            target = rng.choice(choices)
+            index = position[target]
+            if index < 2:
+                continue
+            order[:index] = reversed(order[:index])
+            for offset in range(index):
+                position[order[offset]] = offset
+        else:
+            endpoint = order[-1]
+            choices = [cell for cell in neighbors[endpoint] if cell != order[-2]]
+            if not choices:
+                continue
+            target = rng.choice(choices)
+            index = position[target]
+            if index > count - 3:
+                continue
+            order[index + 1 :] = reversed(order[index + 1 :])
+            for offset in range(index + 1, count):
+                position[order[offset]] = offset
+    return order
+
+
+def direction(a: tuple[int, int], b: tuple[int, int]) -> tuple[int, int]:
+    return b[0] - a[0], b[1] - a[1]
+
+
+def build_svg(weeks: list[dict], theme: str, seed: int) -> str:
     weeks = weeks[-53:]
     columns = len(weeks)
     width = MARGIN * 2 + columns * STEP - GAP
@@ -134,16 +193,15 @@ def build_svg(weeks: list[dict], theme: str) -> str:
                     day.get("contributionLevel", "NONE"), 0
                 )
 
-    points: list[tuple[float, float]] = []
-    for column in range(columns):
-        rows = range(ROWS) if column % 2 == 0 else range(ROWS - 1, -1, -1)
-        for row in rows:
-            points.append(
-                (
-                    MARGIN + column * STEP + CELL / 2,
-                    MARGIN + row * STEP + CELL / 2,
-                )
-            )
+    order = randomize_order(serpentine_order(columns), columns, seed)
+    index_by_cell = {cell: index for index, cell in enumerate(order)}
+    points = [
+        (
+            MARGIN + column * STEP + CELL / 2,
+            MARGIN + row * STEP + CELL / 2,
+        )
+        for column, row in order
+    ]
 
     total = (len(points) - 1) * STEP
     body_length = BODY_CELLS * STEP
@@ -170,7 +228,7 @@ def build_svg(weeks: list[dict], theme: str) -> str:
                 rects.append(f"<rect {attrs}/>")
                 continue
 
-            index = column * ROWS + (row if column % 2 == 0 else ROWS - 1 - row)
+            index = index_by_cell[(column, row)]
             if index < BODY_CELLS:
                 moment = 0.0
             else:
@@ -185,12 +243,14 @@ def build_svg(weeks: list[dict], theme: str) -> str:
 
     path_data = "M " + " L ".join(f"{number(x)} {number(y)}" for x, y in points)
 
-    head_stops: list[int] = []
-    for column in range(columns):
-        for index in (column * ROWS, column * ROWS + ROWS - 1):
-            if index >= BODY_CELLS:
-                head_stops.append(index)
-    head_stops = sorted(set(head_stops))
+    head_stops = [BODY_CELLS]
+    previous = direction(order[BODY_CELLS], order[BODY_CELLS + 1])
+    for index in range(BODY_CELLS + 1, last_index):
+        current = direction(order[index], order[index + 1])
+        if current != previous:
+            head_stops.append(index)
+        previous = current
+    head_stops.append(last_index)
 
     frames = []
     for index in head_stops:
@@ -240,7 +300,10 @@ def main() -> None:
     parser.add_argument("--user", required=True, help="GitHub username")
     parser.add_argument("--out", default="dist", help="output directory")
     parser.add_argument("--demo", action="store_true", help="use generated data")
+    parser.add_argument("--seed", type=int, help="path seed (default: today)")
     args = parser.parse_args()
+
+    seed = args.seed if args.seed is not None else date.today().toordinal()
 
     if args.demo:
         weeks = demo_weeks()
@@ -253,10 +316,10 @@ def main() -> None:
     output = Path(args.out)
     output.mkdir(parents=True, exist_ok=True)
     for theme, filename in (("light", "snake.svg"), ("dark", "snake-dark.svg")):
-        svg = build_svg(weeks, theme)
+        svg = build_svg(weeks, theme, seed)
         path = output / filename
         path.write_text(svg, encoding="utf-8")
-        print(f"wrote {path} ({len(svg.encode('utf-8'))} bytes)")
+        print(f"wrote {path} ({len(svg.encode('utf-8'))} bytes, seed {seed})")
 
 
 if __name__ == "__main__":
