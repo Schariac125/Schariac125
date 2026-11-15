@@ -39,9 +39,9 @@ An ordinary undergraduate at Fuzhou University. I spend most of my time learning
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Schariac125/Schariac125/output/snake-dark.svg" />
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Schariac125/Schariac125/output/snake.svg" />
-    <img alt="Contribution snake" src="https://raw.githubusercontent.com/Schariac125/Schariac125/output/snake.svg" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Schariac125/Schariac125/refs/heads/output/snake-dark.svg" />
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Schariac125/Schariac125/refs/heads/output/snake.svg" />
+    <img alt="Contribution snake" src="https://raw.githubusercontent.com/Schariac125/Schariac125/refs/heads/output/snake.svg" />
   </picture>
 </p>
 
