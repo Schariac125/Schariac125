@@ -1,4 +1,4 @@
-### Hi, I'm Schariac125 👋
+## Hi, I'm Schariac125 👋
 
 An ordinary undergraduate at Fuzhou University. I spend most of my time learning, and the rest writing about whatever catches my attention.
 
