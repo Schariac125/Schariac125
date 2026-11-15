@@ -215,6 +215,7 @@ def build_svg(weeks: list[dict], theme: str, seed: int) -> str:
     last_index = len(points) - 1
 
     rects: list[str] = []
+    eat_rules: list[str] = []
     for column in range(columns):
         for row in range(ROWS):
             level = cells.get((column, row), 0)
@@ -233,12 +234,16 @@ def build_svg(weeks: list[dict], theme: str, seed: int) -> str:
                 moment = 0.0
             else:
                 moment = (index - BODY_CELLS) / (last_index - BODY_CELLS)
-            start = min(max(moment, 0.0001), 0.998)
-            end = min(1.0, start + 0.002)
+            start = min(max(moment * 100, 0.0), 99.85)
+            end = min(100.0, start + 0.15)
+            name = f"eat{index}"
+            visible = "0%" if start <= 0 else f"0%, {start:.4f}%"
+            eat_rules.append(
+                f"@keyframes {name} {{ {visible} {{ opacity: 1; }} "
+                f"{end:.4f}%, 100% {{ opacity: 0; }} }}"
+            )
             rects.append(
-                f'<rect {attrs}><animate attributeName="opacity" '
-                f'values="1;1;0" keyTimes="0;{start:.4f};{end:.4f}" '
-                f'dur="{number(DURATION)}s" repeatCount="indefinite"/></rect>'
+                f'<rect {attrs} style="animation:{name} {number(DURATION)}s linear infinite"/>'
             )
 
     path_data = "M " + " L ".join(f"{number(x)} {number(y)}" for x, y in points)
@@ -282,6 +287,7 @@ def build_svg(weeks: list[dict], theme: str, seed: int) -> str:
     @keyframes head {{
       {keyframes}
     }}
+    {chr(10).join("    " + rule for rule in eat_rules)}
   </style>
   <g>
     {chr(10).join("    " + rect for rect in rects)}
